@@ -1,10 +1,10 @@
-
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CountdownTimer from '@/components/CountdownTimer';
 import RegistrationChart from '@/components/RegistrationChart';
 import InstructionSection from '@/components/InstructionSection';
+import AnimatedBackground from '@/components/AnimatedBackground';
 import { Triangle, Circle, Square, AlertTriangle, Skull } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 
@@ -38,16 +38,11 @@ const Index = () => {
   
   return (
     <div className="min-h-screen bg-squid-dark text-white">
+      <AnimatedBackground />
       <Header />
       
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-squid-red/20 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-squid-teal/20 rounded-full blur-3xl animate-float animation-delay-1000"></div>
-          <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-squid-red/30 rounded-full blur-2xl animate-float animation-delay-2000"></div>
-        </div>
-        
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-6 flex justify-center space-x-4">

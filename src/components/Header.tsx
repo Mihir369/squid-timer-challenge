@@ -22,8 +22,8 @@ const Header: React.FC = () => {
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled 
-          ? 'py-3 bg-black/80 backdrop-blur-md shadow-md' 
-          : 'py-6 bg-transparent'
+          ? 'py-3 bg-black/90 backdrop-blur-md' 
+          : 'py-6 bg-black/50 backdrop-blur-sm'
       }`}
     >
       <div className="container mx-auto px-4">
