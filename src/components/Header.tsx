@@ -22,7 +22,7 @@ const Header: React.FC = () => {
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled 
-          ? 'py-3 bg-black/80 backdrop-blur-md shadow-[0_5px_15px_rgba(234,56,76,0.3)]' 
+          ? 'py-3 bg-black/80 backdrop-blur-md shadow-md' 
           : 'py-6 bg-transparent'
       }`}
     >
@@ -30,9 +30,9 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="flex space-x-2 items-center">
-              <AlertTriangle className="h-6 w-6 text-squid-red animate-pulse-danger" />
+              <AlertTriangle className="h-6 w-6 text-squid-red" />
               <Circle className="h-6 w-6 text-squid-teal" />
-              <Square className="h-6 w-6 text-squid-red animate-pulse-danger" />
+              <Square className="h-6 w-6 text-squid-red" />
             </div>
             <h1 className="text-xl font-black font-archivo tracking-tighter ml-2">INGENIOUS</h1>
           </div>
@@ -44,7 +44,7 @@ const Header: React.FC = () => {
             <a href="#contact" className="text-white hover:text-squid-red transition-colors">Contact</a>
           </nav>
           
-          <button className="squid-btn-primary animate-pulse-danger">
+          <button className="squid-btn-primary">
             Join Now
           </button>
         </div>

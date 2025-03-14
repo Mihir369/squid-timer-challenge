@@ -29,28 +29,28 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ endDate, onComplete }) 
       <div className="glass-card p-8 animate-slide-up">
         <div className="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-12">
           <div className="text-center">
-            <div className="timer-digit text-squid-pink animate-pulse-glow">{formatTime(timeLeft.days)}</div>
+            <div className="timer-digit text-squid-pink">{formatTime(timeLeft.days)}</div>
             <div className="timer-label">Days</div>
           </div>
           
           <div className="hidden md:block text-4xl font-light">:</div>
           
           <div className="text-center">
-            <div className="timer-digit text-squid-teal animate-pulse-glow">{formatTime(timeLeft.hours)}</div>
+            <div className="timer-digit text-squid-teal">{formatTime(timeLeft.hours)}</div>
             <div className="timer-label">Hours</div>
           </div>
           
           <div className="hidden md:block text-4xl font-light">:</div>
           
           <div className="text-center">
-            <div className="timer-digit text-squid-pink animate-pulse-glow">{formatTime(timeLeft.minutes)}</div>
+            <div className="timer-digit text-squid-pink">{formatTime(timeLeft.minutes)}</div>
             <div className="timer-label">Minutes</div>
           </div>
           
           <div className="hidden md:block text-4xl font-light">:</div>
           
           <div className="text-center">
-            <div className="timer-digit text-squid-teal animate-pulse-glow">{formatTime(timeLeft.seconds)}</div>
+            <div className="timer-digit text-squid-teal">{formatTime(timeLeft.seconds)}</div>
             <div className="timer-label">Seconds</div>
           </div>
         </div>
