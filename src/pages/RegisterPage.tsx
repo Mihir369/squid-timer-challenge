@@ -1,3 +1,4 @@
+
 // src/pages/RegisterPage.tsx
 import { useState, useRef } from "react";
 import Header from "@/components/Header";
@@ -20,10 +21,10 @@ const RegisterPage = () => {
     category: "",
     abstract: "",
     members: [
-      { name: "", email: "", mobile: "", role: "Leader" },
-      { name: "", email: "", mobile: "", role: "Member" },
-      { name: "", email: "", mobile: "", role: "Member" },
-      { name: "", email: "", mobile: "", role: "Member" },
+      { name: "", email: "", mobile: "", role: "Leader", year: "" },
+      { name: "", email: "", mobile: "", role: "Member", year: "" },
+      { name: "", email: "", mobile: "", role: "Member", year: "" },
+      { name: "", email: "", mobile: "", role: "Member", year: "" },
     ],
   });
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -38,6 +39,8 @@ const RegisterPage = () => {
     "AI Confrontation",
     "Data Decryption",
   ];
+
+  const yearOptions = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
   const handleMemberChange = (index: number, field: string, value: string) => {
     const updatedMembers = [...formData.members];
@@ -107,6 +110,16 @@ const RegisterPage = () => {
       toast({
         title: "Missing Information",
         description: "Red fields require your attention",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if at least the team leader has selected a year
+    if (!formData.members[0].year) {
+      toast({
+        title: "Missing Information",
+        description: "Team leader's year of study is required",
         variant: "destructive",
       });
       return;
@@ -196,11 +209,34 @@ const RegisterPage = () => {
                         onChange={(e) =>
                           handleMemberChange(index, "mobile", e.target.value)
                         }
-                        className="w-full px-3 py-2 bg-black/40 border border-squid-red/30 rounded-md"
+                        className="w-full px-3 py-2 mb-2 bg-black/40 border border-squid-red/30 rounded-md"
                         pattern="^\+[0-9]{1,3}[0-9]{4,14}$"
                         required={index === 0}
                         title="Enter country code followed by number (e.g., +911234567890)"
                       />
+                      <div className="mt-2">
+                        <Select
+                          value={member.year}
+                          onValueChange={(value) =>
+                            handleMemberChange(index, "year", value)
+                          }
+                        >
+                          <SelectTrigger className="bg-black/40 border border-squid-red/30">
+                            <SelectValue placeholder="Select Year of Study" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-squid-dark border border-squid-red/30">
+                            {yearOptions.map((year) => (
+                              <SelectItem
+                                key={year}
+                                value={year}
+                                className="hover:bg-squid-red/10 text-squid-teal"
+                              >
+                                {year}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   ))}
                 </div>
