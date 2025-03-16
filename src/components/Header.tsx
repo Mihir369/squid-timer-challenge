@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from "react";
-import { Triangle, Circle, Square, AlertTriangle } from "lucide-react";
-import { Link } from "react-router-dom"; // Add this import
+import { Triangle, Circle, Square, AlertTriangle, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -34,11 +35,11 @@ const Header: React.FC = () => {
               <Circle className="h-6 w-6 text-squid-teal" />
               <Square className="h-6 w-6 text-squid-red" />
             </div>
-            <Link
-              to="/"
-              className="text-xl font-black font-archivo tracking-tighter ml-2"
-            >
-              INGENIOUS
+            <Link to="/" className="flex items-center ml-2">
+              <div className="flex items-center bg-gradient-to-r from-squid-red to-squid-pink p-1 rounded-md">
+                <Sparkles className="h-5 w-5 text-white mr-1" />
+                <span className="text-xl font-black font-archivo tracking-tighter text-white">INGENIOUS</span>
+              </div>
             </Link>
           </div>
 
