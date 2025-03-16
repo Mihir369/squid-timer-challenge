@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -11,15 +10,12 @@ import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const [endDate] = useState(() => {
-    // Set to April 4th 23:59:59.999 (last millisecond of April 4th)
     return new Date(2025, 3, 4, 23, 59, 59, 999);
   });
 
   const { toast } = useToast();
-  // ... rest of your component
 
   useEffect(() => {
-    // Show welcome toast when component mounts
     toast({
       title: "Welcome to INGENIOUS",
       description: "Registration is now open. The timer is counting down!",
@@ -52,19 +48,19 @@ const Index = () => {
             </div>
 
             <div className="flex justify-center mb-6 animate-fade-in">
-              <div className="inline-flex items-center justify-center animate-neon-pulse">
-                <img 
-                  src="/ingenious-logo.png" 
-                  alt="INGENIOUS" 
-                  className="h-16 md:h-20 drop-shadow-[0_0_15px_rgba(255,255,255,0.7)] transition-all hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.9)] duration-300"
+              <div className="inline-flex items-center justify-center">
+                <img
+                  src="/ingenious-logo.png"
+                  alt="INGENIOUS"
+                  className="h-16 md:h-20 transition-all duration-300"
                   onError={(e) => {
-                    // Fallback to text if image fails to load
                     const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
+                    target.style.display = "none";
                     const parent = target.parentElement;
                     if (parent) {
-                      const textSpan = document.createElement('span');
-                      textSpan.className = "text-5xl sm:text-6xl md:text-7xl font-black font-archivo tracking-tight text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.7)]";
+                      const textSpan = document.createElement("span");
+                      textSpan.className =
+                        "text-5xl sm:text-6xl md:text-7xl font-black font-archivo tracking-tight text-white";
                       textSpan.textContent = "INGENIOUS";
                       parent.appendChild(textSpan);
                     }
