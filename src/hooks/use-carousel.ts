@@ -1,12 +1,18 @@
+
 import * as React from "react";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
+  type EmblaOptionsType,
 } from "embla-carousel-react";
 
 type CarouselApi = UseEmblaCarouselType[1];
 
-export function useCarousel() {
-  const [api, setApi] = React.useState<CarouselApi | null>(null);
+export function useCarousel(options?: EmblaOptionsType) {
+  const [emblaRef, api] = useEmblaCarousel({
+    loop: false,
+    ...options,
+  });
+  
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
@@ -47,8 +53,8 @@ export function useCarousel() {
   }, [api, onSelect]);
 
   return {
+    emblaRef,
     api,
-    setApi,
     currentIndex,
     canScrollPrev,
     canScrollNext,

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -60,31 +61,13 @@ const timelineEvents = [
 ];
 
 const RegistrationChart: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [api, setApi] = useState<any>(null);
+  const { emblaRef, currentIndex } = useCarousel({ dragFree: false });
 
   // Calculate progress percentage based on current slide
   const progressPercentage = Math.min(
     ((currentIndex + 0.75) / (timelineEvents.length - 1)) * 100,
     100
   );
-
-  React.useEffect(() => {
-    if (!api) return;
-
-    // Update current index when the slide changes
-    const onSelect = () => {
-      setCurrentIndex(api.selectedScrollSnap());
-    };
-
-    api.on("select", onSelect);
-    // Set initial index
-    onSelect();
-
-    return () => {
-      api.off("select", onSelect);
-    };
-  }, [api]);
 
   return (
     <div className="glass-card p-6 animate-slide-up">
@@ -94,8 +77,8 @@ const RegistrationChart: React.FC = () => {
 
       {/* Competition Timeline Section */}
       <div className="py-6">
-        <Carousel className="w-full" setApi={setApi}>
-          <CarouselContent>
+        <Carousel>
+          <CarouselContent ref={emblaRef}>
             {timelineEvents.map((event, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                 <div className="h-full">
