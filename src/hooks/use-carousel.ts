@@ -2,10 +2,10 @@
 import * as React from "react";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
-  type EmblaOptionsType,
 } from "embla-carousel-react";
 
 type CarouselApi = UseEmblaCarouselType[1];
+type EmblaOptionsType = Parameters<typeof useEmblaCarousel>[0];
 
 export function useCarousel(options?: EmblaOptionsType) {
   const [emblaRef, api] = useEmblaCarousel({
