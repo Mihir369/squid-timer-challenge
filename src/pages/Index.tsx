@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -50,11 +51,27 @@ const Index = () => {
               <Skull className="h-12 w-12 text-squid-red animate-pulse-danger animation-delay-1000" />
             </div>
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black font-archivo mb-6 tracking-tight animate-fade-in">
-              <span className="squid-gradient bg-clip-text text-transparent">
-                INGENIOUS
-              </span>
-            </h1>
+            <div className="flex justify-center mb-6 animate-fade-in">
+              <div className="bg-gradient-to-r from-squid-red to-squid-pink p-3 rounded-md inline-flex items-center">
+                <img 
+                  src="/ingenious-logo.png" 
+                  alt="INGENIOUS" 
+                  className="h-16 md:h-20"
+                  onError={(e) => {
+                    // Fallback to text if image fails to load
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      const textSpan = document.createElement('span');
+                      textSpan.className = "text-5xl sm:text-6xl md:text-7xl font-black font-archivo tracking-tight text-white";
+                      textSpan.textContent = "INGENIOUS";
+                      parent.appendChild(textSpan);
+                    }
+                  }}
+                />
+              </div>
+            </div>
 
             <p className="text-xl text-gray-300 mb-10 animate-slide-up">
               The clock is ticking. Register now to join the game of a lifetime.
