@@ -52,11 +52,11 @@ const Index = () => {
             </div>
 
             <div className="flex justify-center mb-6 animate-fade-in">
-              <div className="bg-gradient-to-r from-squid-red to-squid-pink p-3 rounded-md inline-flex items-center">
+              <div className="inline-flex items-center justify-center animate-neon-pulse">
                 <img 
                   src="/ingenious-logo.png" 
                   alt="INGENIOUS" 
-                  className="h-16 md:h-20"
+                  className="h-16 md:h-20 drop-shadow-[0_0_15px_rgba(255,255,255,0.7)] transition-all hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.9)] duration-300"
                   onError={(e) => {
                     // Fallback to text if image fails to load
                     const target = e.target as HTMLImageElement;
@@ -64,7 +64,7 @@ const Index = () => {
                     const parent = target.parentElement;
                     if (parent) {
                       const textSpan = document.createElement('span');
-                      textSpan.className = "text-5xl sm:text-6xl md:text-7xl font-black font-archivo tracking-tight text-white";
+                      textSpan.className = "text-5xl sm:text-6xl md:text-7xl font-black font-archivo tracking-tight text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.7)]";
                       textSpan.textContent = "INGENIOUS";
                       parent.appendChild(textSpan);
                     }
