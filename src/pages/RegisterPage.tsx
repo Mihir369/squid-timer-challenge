@@ -38,12 +38,12 @@ const RegisterPage = () => {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const categories = [
-    "Algorithm Mastery",
-    "Cryptic Puzzles",
-    "Survival Strategy",
-    "Virtual Warfare",
-    "AI Confrontation",
-    "Data Decryption",
+    "Artificial Intelligence & Machine Learning",
+    "Web Development",
+    "Game Development",
+    "App Development",
+    "Blockchain",
+    "Other",
   ];
 
   const yearOptions = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
