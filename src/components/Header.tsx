@@ -1,18 +1,10 @@
 
-import React, { useState, useEffect } from "react";
-import {
-  Triangle,
-  Circle,
-  Square,
-  AlertTriangle,
-  Sparkles,
-} from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Triangle, Circle, Square, AlertTriangle } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
-
+  
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) {
@@ -22,22 +14,16 @@ const Header: React.FC = () => {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const isActive = (path: string) => {
-    return location.pathname === path 
-      ? "text-squid-red" 
-      : "text-white hover:text-squid-red";
-  };
-
+  
   return (
-    <header
+    <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "py-3 bg-black/90 backdrop-blur-md"
-          : "py-6 bg-black/50 backdrop-blur-sm"
+        scrolled 
+          ? 'py-3 bg-black/90 backdrop-blur-md' 
+          : 'py-6 bg-black/50 backdrop-blur-sm'
       }`}
     >
       <div className="container mx-auto px-4">
@@ -48,45 +34,19 @@ const Header: React.FC = () => {
               <Circle className="h-6 w-6 text-squid-teal" />
               <Square className="h-6 w-6 text-squid-red" />
             </div>
-            <Link to="/" className="flex items-center ml-2">
-              <div className="flex items-center">
-                <span className="text-xl font-black font-archivo tracking-tighter text-white">
-                  INGENIOUS
-                </span>
-              </div>
-            </Link>
+            <h1 className="text-xl font-black font-archivo tracking-tighter ml-2">INGENIOUS</h1>
           </div>
-
+          
           <nav className="hidden md:flex items-center space-x-8">
-            <Link
-              to="/"
-              className={`transition-colors ${isActive('/')}`}
-            >
-              Home
-            </Link>
-            <Link
-              to="/about"
-              className={`transition-colors ${isActive('/about')}`}
-            >
-              About
-            </Link>
-            <Link
-              to="/register"
-              className={`transition-colors ${isActive('/register')}`}
-            >
-              Register
-            </Link>
-            <Link
-              to="/contact"
-              className={`transition-colors ${isActive('/contact')}`}
-            >
-              Contact
-            </Link>
+            <a href="#" className="text-white hover:text-squid-red transition-colors">Home</a>
+            <a href="#about" className="text-white hover:text-squid-red transition-colors">About</a>
+            <a href="#register" className="text-white hover:text-squid-red transition-colors">Register</a>
+            <a href="#contact" className="text-white hover:text-squid-red transition-colors">Contact</a>
           </nav>
-
-          <Link to="/register" className="squid-btn-primary">
+          
+          <button className="squid-btn-primary">
             Join Now
-          </Link>
+          </button>
         </div>
       </div>
     </header>

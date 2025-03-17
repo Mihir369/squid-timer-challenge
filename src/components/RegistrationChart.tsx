@@ -1,160 +1,105 @@
 
-import React, { useState, useEffect } from "react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "@/components/ui/carousel";
-import {
-  Calendar,
-  Trophy,
-  Flag,
-  Timer,
-  Award,
-  Star,
-  Rocket,
-  Target,
-  Skull,
-} from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { useCarousel } from "@/hooks/use-carousel";
+import React, { useState } from 'react';
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer 
+} from 'recharts';
 
-// Competition timeline data
-const timelineEvents = [
-  {
-    date: "march 20",
-    title: "Registration Opens",
-    description: "Players can officially enroll in the competition",
-    icon: <Rocket className="h-8 w-8 text-squid-pink" />,
-    color: "from-squid-pink to-squid-red",
-  },
-  {
-    date: "Apr 4",
-    title: "Registration Closes",
-    description: "Last chance to secure your spot",
-    icon: <Timer className="h-8 w-8 text-squid-red" />,
-    color: "from-squid-red to-red-700",
-  },
-  {
-    date: "Apr 5",
-    title: "Orientation Day",
-    description: "Introduction to rules and challenges",
-    icon: <Flag className="h-8 w-8 text-squid-teal" />,
-    color: "from-squid-teal to-cyan-700",
-  },
-  {
-    date: "Apr 5",
-    title: "First Game",
-    description: "Red Light, Green Light",
-    icon: <Skull className="h-8 w-8 text-white" />,
-    color: "from-white/30 to-white/10",
-  },
-  {
-    date: " Apr 5",
-    title: "Final Game",
-    description: "Squid Game",
-    icon: <Trophy className="h-8 w-8 text-yellow-400" />,
-    color: "from-yellow-400 to-amber-600",
-  },
+// Sample data - this would come from your API in a real application
+const sampleData = [
+  { date: 'Jan 1', registrations: 156, capacity: 456 },
+  { date: 'Jan 2', registrations: 230, capacity: 456 },
+  { date: 'Jan 3', registrations: 305, capacity: 456 },
+  { date: 'Jan 4', registrations: 350, capacity: 456 },
+  { date: 'Jan 5', registrations: 410, capacity: 456 },
+  { date: 'Jan 6', registrations: 425, capacity: 456 },
+  { date: 'Jan 7', registrations: 432, capacity: 456 },
 ];
 
 const RegistrationChart: React.FC = () => {
-  const { emblaRef, currentIndex } = useCarousel({ dragFree: false });
-
-  // Calculate progress percentage based on current slide
-  const progressPercentage = Math.min(
-    ((currentIndex + 0.75) / (timelineEvents.length - 1)) * 100,
-    100
-  );
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div className="glass-card p-6 animate-slide-up">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="section-title text-squid-pink">Competition Timeline</h3>
-      </div>
-
-      {/* Competition Timeline Section */}
-      <div className="py-6">
-        <Carousel>
-          <CarouselContent ref={emblaRef}>
-            {timelineEvents.map((event, index) => (
-              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                <div className="h-full">
-                  <div
-                    className={`h-full p-6 rounded-xl bg-gradient-to-br ${event.color} bg-opacity-20 border border-white/10 flex flex-col`}
-                  >
-                    <div className="mb-4 flex justify-between items-start">
-                      <div className="p-3 bg-black/30 rounded-lg">
-                        {event.icon}
-                      </div>
-                      <span className="bg-black/40 text-white text-sm py-1 px-3 rounded-full">
-                        {event.date}
-                      </span>
-                    </div>
-                    <h4 className="text-xl font-bold mb-2 text-white">
-                      {event.title}
-                    </h4>
-                    <p className="text-white/70 text-sm">{event.description}</p>
-
-                    {/* Event number/position indicator */}
-                    <div className="mt-auto pt-4 flex items-center">
-                      <div className="h-1 flex-grow bg-white/20 rounded-full">
-                        <div
-                          className="h-full bg-white rounded-full"
-                          style={{
-                            width: `${
-                              (index / (timelineEvents.length - 1)) * 100
-                            }%`,
-                          }}
-                        />
-                      </div>
-                      <span className="ml-3 text-xs text-white/50">
-                        {index + 1}/{timelineEvents.length}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="left-1 bg-black/50 border-squid-pink text-squid-pink hover:bg-black/70" />
-          <CarouselNext className="right-1 bg-black/50 border-squid-pink text-squid-pink hover:bg-black/70" />
-        </Carousel>
-      </div>
-
-      {/* Timeline Visualization */}
-      <div className="relative mt-6 mb-2 px-4">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gray-800 rounded-full">
-          <div
-            className="absolute top-0 left-0 h-full bg-squid-pink rounded-full transition-all duration-300 ease-out"
-            style={{ width: `${progressPercentage}%` }}
-          ></div>
+        <h3 className="section-title text-squid-teal">Registration Status</h3>
+        <div className="flex items-center gap-2">
+          <span className={`px-3 py-1 text-sm rounded-full font-medium ${isOpen ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+            {isOpen ? 'Registration Open' : 'Registration Closed'}
+          </span>
         </div>
-        <div className="flex justify-between pt-6">
-          {timelineEvents.map((event, index) => {
-            const isActive = index <= currentIndex;
-            return (
-              <div key={index} className="text-center">
-                <div
-                  className={`w-3 h-3 rounded-full mx-auto -mt-7 transition-colors duration-300
-                    ${isActive ? "bg-squid-pink" : "bg-gray-600"}`}
-                ></div>
-                <span className="text-xs mt-1 block text-white/70">
-                  {index === 0
-                    ? "Registration"
-                    : index === 1
-                    ? "Preparation"
-                    : index === 2
-                    ? "Orientation"
-                    : index === 3
-                    ? "Games"
-                    : "Finals"}
-                </span>
-              </div>
-            );
-          })}
+      </div>
+      
+      <div className="h-[300px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={sampleData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#333333" />
+            <XAxis 
+              dataKey="date" 
+              stroke="#FFFFFF" 
+              tick={{ fill: '#FFFFFF' }} 
+            />
+            <YAxis 
+              stroke="#FFFFFF" 
+              tick={{ fill: '#FFFFFF' }} 
+            />
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: '#222222', 
+                borderColor: '#FF0A6C',
+                color: '#FFFFFF',
+              }} 
+            />
+            <Legend />
+            <Line 
+              type="monotone" 
+              dataKey="registrations" 
+              stroke="#FF0A6C" 
+              strokeWidth={3}
+              activeDot={{ r: 8 }} 
+              name="Registrations"
+            />
+            <Line 
+              type="monotone" 
+              dataKey="capacity" 
+              stroke="#2CCED9" 
+              strokeWidth={2}
+              strokeDasharray="5 5" 
+              name="Total Capacity"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      
+      <div className="mt-6 p-4 bg-black/20 rounded-lg border border-white/10">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium">Spots Remaining</p>
+            <p className="text-2xl font-bold text-squid-teal">
+              {sampleData[sampleData.length - 1].capacity - sampleData[sampleData.length - 1].registrations}
+            </p>
+          </div>
+          
+          <div>
+            <p className="text-sm font-medium">Registration Rate</p>
+            <p className="text-2xl font-bold text-squid-pink">
+              {Math.round((sampleData[sampleData.length - 1].registrations / sampleData[sampleData.length - 1].capacity) * 100)}%
+            </p>
+          </div>
+          
+          <div>
+            <p className="text-sm font-medium">Closing Date</p>
+            <p className="text-2xl font-bold text-white">Jan 15</p>
+          </div>
         </div>
       </div>
     </div>
