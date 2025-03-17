@@ -104,6 +104,12 @@ export default {
 					'75%': { transform: 'translateZ(50px) translateX(20px) translateY(20px) rotate(270deg)' },
 					'100%': { transform: 'translateZ(0) translateX(0) translateY(0) rotate(360deg)' }
 				},
+				'float-simple': {
+					'0%': { transform: 'translateX(0) translateY(0)' },
+					'33%': { transform: 'translateX(10px) translateY(-10px)' },
+					'66%': { transform: 'translateX(-10px) translateY(10px)' },
+					'100%': { transform: 'translateX(0) translateY(0)' }
+				},
 				'neon-pulse': {
 					'0%, 100%': { 
 						opacity: '0.8',
@@ -140,6 +146,7 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'float': 'float 6s ease-in-out infinite',
 				'float-3d': 'float-3d 20s ease-in-out infinite',
+				'float-simple': 'float-simple 8s ease-in-out infinite',
 				'neon-pulse': 'neon-pulse 2s ease-in-out infinite',
 				'pulse-slow': 'pulse-slow 4s ease-in-out infinite',
 				'slide-up': 'slide-up 0.6s ease-out',
