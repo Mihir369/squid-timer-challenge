@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import {
   Triangle,
@@ -6,10 +7,11 @@ import {
   AlertTriangle,
   Sparkles,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +25,12 @@ const Header: React.FC = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const isActive = (path: string) => {
+    return location.pathname === path 
+      ? "text-squid-red" 
+      : "text-white hover:text-squid-red";
+  };
 
   return (
     <header
@@ -41,7 +49,7 @@ const Header: React.FC = () => {
               <Square className="h-6 w-6 text-squid-red" />
             </div>
             <Link to="/" className="flex items-center ml-2">
-              <div className="flex items-center bg-gradient-to-r">
+              <div className="flex items-center">
                 <span className="text-xl font-black font-archivo tracking-tighter text-white">
                   INGENIOUS
                 </span>
@@ -52,25 +60,25 @@ const Header: React.FC = () => {
           <nav className="hidden md:flex items-center space-x-8">
             <Link
               to="/"
-              className="text-white hover:text-squid-red transition-colors"
+              className={`transition-colors ${isActive('/')}`}
             >
               Home
             </Link>
             <Link
               to="/about"
-              className="text-white hover:text-squid-red transition-colors"
+              className={`transition-colors ${isActive('/about')}`}
             >
               About
             </Link>
             <Link
               to="/register"
-              className="text-white hover:text-squid-red transition-colors"
+              className={`transition-colors ${isActive('/register')}`}
             >
               Register
             </Link>
             <Link
               to="/contact"
-              className="text-white hover:text-squid-red transition-colors"
+              className={`transition-colors ${isActive('/contact')}`}
             >
               Contact
             </Link>
