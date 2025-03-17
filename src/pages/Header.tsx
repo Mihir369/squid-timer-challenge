@@ -41,7 +41,8 @@ const Header: React.FC = () => {
               <Square className="h-6 w-6 text-squid-red" />
             </div>
             <Link to="/" className="flex items-center ml-2">
-              <div className="flex items-center bg-gradient-to-r">
+              <div className="flex items-center bg-gradient-to-r from-squid-red to-squid-pink p-1 rounded-md">
+                <Sparkles className="h-5 w-5 text-white mr-1" />
                 <span className="text-xl font-black font-archivo tracking-tighter text-white">
                   INGENIOUS
                 </span>
