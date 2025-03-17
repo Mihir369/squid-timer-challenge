@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { PartyPopper } from "lucide-react";
 
 const RegisterPage = () => {
   const { toast } = useToast();
@@ -323,11 +324,9 @@ const RegisterPage = () => {
         <DialogContent className="bg-black border-2 border-squid-red/40 backdrop-blur-xl shadow-[0_0_50px_rgba(234,56,76,0.3)] max-w-md">
           <DialogHeader className="space-y-4">
             <div className="flex justify-center">
-              <img 
-                src="/hurray-celebration.png" 
-                alt="Hurray Celebration" 
-                className="w-32 h-32 object-contain animate-bounce-slow"
-              />
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-squid-red/20 to-squid-teal/20 flex items-center justify-center animate-pulse">
+                <PartyPopper className="h-10 w-10 text-squid-red" />
+              </div>
             </div>
             <DialogTitle className="text-2xl font-black text-squid-red text-center">
               HURRAYY!!
