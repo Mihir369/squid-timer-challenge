@@ -58,7 +58,6 @@ const config = {
         "squid-pink": "#FF6B81",
         "squid-teal": "#4EEBC5",
         "squid-dark": "#010A13",
-        "squid-light": "#F5F5F7",
       },
       borderRadius: {
         lg: "var(--radius)",
