@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo+Black&display=swap');
 
 @tailwind base;
@@ -92,7 +93,7 @@
   }
 
   body {
-    @apply bg-squid-dark text-white font-sans antialiased;
+    @apply bg-squid-dark text-squid-light font-sans antialiased;
     background-image: radial-gradient(circle at center, rgba(234, 56, 76, 0.08) 0%, transparent 70%);
   }
 
@@ -166,12 +167,5 @@
   
   .shape-square {
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-  }
-
-  /* Simplified animation for mobile devices */
-  .animated-shape-simple {
-    @apply animate-float-simple;
-    /* Prevent composite layers where possible to save memory */
-    transform: translateZ(0);
   }
 }
