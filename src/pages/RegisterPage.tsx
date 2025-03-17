@@ -1,4 +1,3 @@
-
 // src/pages/RegisterPage.tsx
 import { useState } from "react";
 import Header from "@/components/Header";
@@ -11,14 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { PartyPopper } from "lucide-react";
 
 const RegisterPage = () => {
   const { toast } = useToast();
@@ -36,15 +27,14 @@ const RegisterPage = () => {
   });
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoError, setVideoError] = useState("");
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const categories = [
-    "Algorithm Mastery",
-    "Cryptic Puzzles",
-    "Survival Strategy",
-    "Virtual Warfare",
-    "AI Confrontation",
-    "Data Decryption",
+    "AI&Machinelearning",
+    "web development",
+    "Internet of Things(IOT)",
+    "Game Development",
+    "Application development",
+    "Blockchain development",
   ];
 
   const yearOptions = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
@@ -98,8 +88,10 @@ const RegisterPage = () => {
       return;
     }
 
-    // Show success dialog instead of just a toast
-    setShowSuccessDialog(true);
+    toast({
+      title: "Registration Initiated!",
+      description: "Your team has entered the arena",
+    });
   };
 
   return (
@@ -255,7 +247,7 @@ const RegisterPage = () => {
                   Stage 3: Video Upload
                 </h3>
 
-                <div className="border-2 border-dashed border-squid-red/50 rounded-lg p-6 bg-black/30 flex flex-col items-center">
+                <div className="border-2 border-dashed border-squid-red/50 rounded-lg p-6 bg-black/30">
                   <input
                     type="file"
                     accept="video/mp4,video/x-m4v,video/*"
@@ -265,38 +257,16 @@ const RegisterPage = () => {
                   />
                   <label
                     htmlFor="video-upload"
-                    className="squid-btn-outline cursor-pointer inline-flex items-center gap-2 mb-4"
+                    className="squid-btn-outline cursor-pointer inline-flex items-center gap-2"
                   >
                     Upload Video *
                   </label>
 
-                  {videoFile ? (
-                    <div className="mt-2 flex flex-col items-center w-full">
-                      <div className="w-16 h-16 bg-squid-red/20 rounded-full flex items-center justify-center mb-2 animate-pulse">
-                        <svg 
-                          viewBox="0 0 24 24" 
-                          className="w-8 h-8 text-squid-red"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polygon points="23 7 16 12 23 17 23 7" />
-                          <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                        </svg>
-                      </div>
-                      <p className="text-squid-teal text-center font-medium">
-                        {videoFile.name}
+                  {videoFile && (
+                    <div className="mt-4 text-sm">
+                      <p className="text-squid-teal">
+                        Selected: {videoFile.name}
                       </p>
-                      <p className="text-xs text-squid-teal/70 mt-1">
-                        {(videoFile.size / (1024 * 1024)).toFixed(2)} MB
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="text-center text-squid-teal/60 text-sm">
-                      <p>Select your demo video file</p>
-                      <p className="mt-1 text-xs">(MP4/M4V format)</p>
                     </div>
                   )}
 
@@ -318,31 +288,6 @@ const RegisterPage = () => {
           </div>
         </div>
       </div>
-
-      {/* Success Dialog */}
-      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <DialogContent className="bg-black border-2 border-squid-red/40 backdrop-blur-xl shadow-[0_0_50px_rgba(234,56,76,0.3)] max-w-md">
-          <DialogHeader className="space-y-4">
-            <div className="flex justify-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-squid-red/20 to-squid-teal/20 flex items-center justify-center animate-pulse">
-                <PartyPopper className="h-10 w-10 text-squid-red" />
-              </div>
-            </div>
-            <DialogTitle className="text-2xl font-black text-squid-red text-center">
-              HURRAYY!!
-            </DialogTitle>
-            <DialogDescription className="text-center text-squid-teal font-medium">
-              <p className="mb-4">Your registration is completed!</p>
-              <div className="bg-black/30 p-4 rounded-lg border border-squid-red/20 mb-4">
-                <p className="font-bold text-squid-pink mb-1">Team: {formData.teamName}</p>
-                <p className="text-sm">Project: {formData.projectTitle}</p>
-                <p className="text-sm">Category: {formData.category}</p>
-              </div>
-              <p className="text-sm">Get ready for the ultimate coding battle!</p>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
