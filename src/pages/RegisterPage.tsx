@@ -1,8 +1,10 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import { useToast } from "@/components/ui/use-toast";
+import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
@@ -17,7 +19,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { PartyPopper, Loader } from "lucide-react";
+import { PartyPopper, Loader, Upload } from "lucide-react";
 import { registerTeam } from "@/services/registrationService";
 
 const RegisterPage = () => {
@@ -39,6 +41,7 @@ const RegisterPage = () => {
   const [videoError, setVideoError] = useState("");
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [registrationId, setRegistrationId] = useState("");
 
   const categories = [
@@ -105,9 +108,15 @@ const RegisterPage = () => {
 
     try {
       setIsSubmitting(true);
+      setUploadProgress(0);
       
-      // Register the team
-      const id = await registerTeam(formData, videoFile);
+      // Register the team with progress tracking
+      const id = await registerTeam(
+        formData, 
+        videoFile, 
+        (progress) => setUploadProgress(progress)
+      );
+      
       setRegistrationId(id);
       
       // Show success dialog
@@ -300,6 +309,7 @@ const RegisterPage = () => {
                       isSubmitting ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   >
+                    <Upload className="w-4 h-4" />
                     Upload Video *
                   </label>
 
@@ -347,6 +357,20 @@ const RegisterPage = () => {
                   )}
                 </div>
               </div>
+
+              {isSubmitting && (
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <p className="text-squid-teal text-sm">Uploading video...</p>
+                    <span className="text-squid-pink font-medium">{Math.round(uploadProgress)}%</span>
+                  </div>
+                  <Progress 
+                    value={uploadProgress} 
+                    className="h-2 bg-black/30 border border-squid-red/30"
+                    indicatorClassName="bg-gradient-to-r from-squid-red to-squid-pink"
+                  />
+                </div>
+              )}
 
               <button
                 type="submit"

@@ -1,6 +1,6 @@
 
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
 
 export interface TeamMember {
@@ -21,18 +21,48 @@ export interface RegistrationData {
   videoUrl?: string;
 }
 
-export const registerTeam = async (formData: {
-  teamName: string;
-  projectTitle: string;
-  category: string;
-  abstract: string;
-  members: TeamMember[];
-}, videoFile: File): Promise<string> => {
+export const registerTeam = async (
+  formData: {
+    teamName: string;
+    projectTitle: string;
+    category: string;
+    abstract: string;
+    members: TeamMember[];
+  }, 
+  videoFile: File,
+  onProgress?: (progress: number) => void
+): Promise<string> => {
   try {
-    // 1. Upload the video to Firebase Storage
+    // 1. Upload the video to Firebase Storage with progress tracking
     const videoRef = ref(storage, `videos/${formData.teamName}_${Date.now()}`);
-    await uploadBytes(videoRef, videoFile);
-    const videoUrl = await getDownloadURL(videoRef);
+    
+    // Use uploadBytesResumable instead of uploadBytes to track progress
+    const uploadTask = uploadBytesResumable(videoRef, videoFile);
+    
+    // Create a promise that resolves when upload is complete and tracks progress
+    const uploadPromise = new Promise<string>((resolve, reject) => {
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          if (onProgress) {
+            onProgress(progress);
+          }
+        },
+        (error) => {
+          console.error('Upload error:', error);
+          reject(error);
+        },
+        async () => {
+          // Upload completed successfully, get download URL
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(downloadURL);
+        }
+      );
+    });
+    
+    // Wait for the upload to complete and get the video URL
+    const videoUrl = await uploadPromise;
 
     // 2. Save the team data to Firestore
     const registrationData: RegistrationData = {
