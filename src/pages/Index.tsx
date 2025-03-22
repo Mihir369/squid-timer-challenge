@@ -5,7 +5,7 @@ import CountdownTimer from "@/components/CountdownTimer";
 import RegistrationChart from "@/components/RegistrationChart";
 import InstructionSection from "@/components/InstructionSection";
 import AnimatedBackground from "@/components/AnimatedBackground";
-import { Triangle, Circle, Square, AlertTriangle, Skull } from "lucide-react";
+import { Triangle, Circle, Square, AlertTriangle, Skull, Shield } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
@@ -32,8 +32,12 @@ const Index = () => {
     });
   };
 
+  const navigateToAdmin = () => {
+    window.location.href = '/admin';
+  };
+
   return (
-    <div className="min-h-screen bg-squid-dark text-white">
+    <div className="min-h-screen relative overflow-hidden">
       <AnimatedBackground />
       <Header />
 
@@ -155,6 +159,18 @@ const Index = () => {
         </div>
       </section>
       <Footer />
+
+      {/* Admin access at the bottom, very subtle */}
+      <div className="absolute bottom-4 right-4 opacity-30 hover:opacity-100 transition-opacity">
+        <button 
+          onClick={navigateToAdmin}
+          className="text-xs text-gray-500 hover:text-squid-red flex items-center"
+          aria-label="Admin Access"
+        >
+          <Shield className="w-3 h-3 mr-1" />
+          Admin
+        </button>
+      </div>
     </div>
   );
 };

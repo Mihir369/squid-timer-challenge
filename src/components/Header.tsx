@@ -6,11 +6,13 @@ import {
   Square,
   AlertTriangle,
   Sparkles,
+  Shield,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [showAdminLink, setShowAdminLink] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -21,6 +23,10 @@ const Header: React.FC = () => {
         setScrolled(false);
       }
     };
+
+    // Check if user is admin (has previously authenticated)
+    const isAdmin = localStorage.getItem("adminAuth") === "true";
+    setShowAdminLink(isAdmin);
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -82,11 +88,31 @@ const Header: React.FC = () => {
             >
               Contact
             </Link>
+            {showAdminLink && (
+              <Link
+                to="/admin"
+                className={`transition-colors flex items-center ${isActive('/admin')}`}
+              >
+                <Shield className="w-4 h-4 mr-1" />
+                Admin
+              </Link>
+            )}
           </nav>
 
-          <Link to="/register" className="squid-btn-primary">
-            Join Now
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link to="/register" className="squid-btn-primary">
+              Join Now
+            </Link>
+            {showAdminLink && (
+              <Link 
+                to="/admin" 
+                className="squid-btn-outline text-sm md:hidden"
+                aria-label="Admin Panel"
+              >
+                <Shield className="w-4 h-4" />
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </header>
