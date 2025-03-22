@@ -1,5 +1,5 @@
-// src/pages/RegisterPage.tsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,9 +17,11 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { PartyPopper } from "lucide-react";
+import { PartyPopper, Loader } from "lucide-react";
+import { registerTeam } from "@/services/registrationService";
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     teamName: "",
@@ -36,6 +38,8 @@ const RegisterPage = () => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoError, setVideoError] = useState("");
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [registrationId, setRegistrationId] = useState("");
 
   const categories = [
     "Artificial Intelligence & Machine Learning",
@@ -72,8 +76,10 @@ const RegisterPage = () => {
     setVideoFile(file);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation
     if (!videoFile) {
       setVideoError("Demo video is required");
       return;
@@ -97,8 +103,25 @@ const RegisterPage = () => {
       return;
     }
 
-    // Show success dialog instead of just a toast
-    setShowSuccessDialog(true);
+    try {
+      setIsSubmitting(true);
+      
+      // Register the team
+      const id = await registerTeam(formData, videoFile);
+      setRegistrationId(id);
+      
+      // Show success dialog
+      setShowSuccessDialog(true);
+    } catch (error) {
+      console.error("Registration failed:", error);
+      toast({
+        title: "Registration Failed",
+        description: "An error occurred. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -130,6 +153,7 @@ const RegisterPage = () => {
                   className="w-full px-4 py-3 bg-black/30 border-2 border-squid-red/50 rounded-lg"
                   placeholder="Team Name *"
                   required
+                  disabled={isSubmitting}
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -152,6 +176,7 @@ const RegisterPage = () => {
                         }
                         className="w-full px-3 py-2 mb-2 bg-black/40 border border-squid-red/30 rounded-md"
                         required={index === 0}
+                        disabled={isSubmitting}
                       />
                       <input
                         type="email"
@@ -162,6 +187,7 @@ const RegisterPage = () => {
                         }
                         className="w-full px-3 py-2 mb-2 bg-black/40 border border-squid-red/30 rounded-md"
                         required={index === 0}
+                        disabled={isSubmitting}
                       />
                       <input
                         type="tel"
@@ -172,12 +198,14 @@ const RegisterPage = () => {
                         }
                         className="w-full px-3 py-2 mb-2 bg-black/40 border border-squid-red/30 rounded-md"
                         required={index === 0}
+                        disabled={isSubmitting}
                       />
                       <Select
                         value={member.year}
                         onValueChange={(value) =>
                           handleMemberChange(index, "year", value)
                         }
+                        disabled={isSubmitting}
                       >
                         <SelectTrigger className="bg-black/40 border border-squid-red/30">
                           <SelectValue placeholder="Year of Study *" />
@@ -213,6 +241,7 @@ const RegisterPage = () => {
                   className="w-full px-4 py-3 bg-black/30 border-2 border-squid-red/50 rounded-lg"
                   placeholder="Project Title *"
                   required
+                  disabled={isSubmitting}
                 />
 
                 <Select
@@ -220,6 +249,7 @@ const RegisterPage = () => {
                   onValueChange={(value) =>
                     setFormData({ ...formData, category: value })
                   }
+                  disabled={isSubmitting}
                 >
                   <SelectTrigger className="bg-black/30 border-2 border-squid-red/50">
                     <SelectValue placeholder="Select Category *" />
@@ -245,6 +275,7 @@ const RegisterPage = () => {
                   className="w-full px-4 py-3 bg-black/30 border-2 border-squid-red/50 rounded-lg h-32"
                   placeholder="Project Abstract *"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -261,10 +292,13 @@ const RegisterPage = () => {
                     onChange={handleVideoUpload}
                     className="hidden"
                     id="video-upload"
+                    disabled={isSubmitting}
                   />
                   <label
                     htmlFor="video-upload"
-                    className="squid-btn-outline cursor-pointer inline-flex items-center gap-2 mb-4"
+                    className={`squid-btn-outline cursor-pointer inline-flex items-center gap-2 mb-4 ${
+                      isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   >
                     Upload Video *
                   </label>
@@ -316,9 +350,17 @@ const RegisterPage = () => {
 
               <button
                 type="submit"
-                className="squid-btn-primary w-full py-4 text-lg font-bold hover:bg-squid-red/90"
+                className="squid-btn-primary w-full py-4 text-lg font-bold hover:bg-squid-red/90 relative"
+                disabled={isSubmitting}
               >
-                SUBMIT REGISTRATION
+                {isSubmitting ? (
+                  <>
+                    <Loader className="w-5 h-5 animate-spin mr-2" />
+                    PROCESSING...
+                  </>
+                ) : (
+                  "SUBMIT REGISTRATION"
+                )}
               </button>
             </form>
           </div>
@@ -335,20 +377,32 @@ const RegisterPage = () => {
               </div>
             </div>
             <DialogTitle className="text-2xl font-black text-squid-red text-center">
-              HURRAYY!!
+              REGISTRATION COMPLETE!
             </DialogTitle>
             <DialogDescription className="text-center text-squid-teal font-medium">
-              <p className="mb-4">Your registration is completed!</p>
+              <p className="mb-4">Your registration has been saved!</p>
               <div className="bg-black/30 p-4 rounded-lg border border-squid-red/20 mb-4">
                 <p className="font-bold text-squid-pink mb-1">
                   Team: {formData.teamName}
                 </p>
                 <p className="text-sm">Project: {formData.projectTitle}</p>
                 <p className="text-sm">Category: {formData.category}</p>
+                <p className="text-sm mt-2 font-mono text-xs border-t border-squid-red/20 pt-2">
+                  Registration ID: {registrationId}
+                </p>
               </div>
               <p className="text-sm">
                 Get ready for the ultimate coding battle!
               </p>
+              <button 
+                onClick={() => {
+                  setShowSuccessDialog(false);
+                  navigate('/');
+                }}
+                className="mt-4 squid-btn-primary"
+              >
+                Return to Home
+              </button>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
