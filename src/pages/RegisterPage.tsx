@@ -1,94 +1,122 @@
-import React, { useState } from "react";
-import { registerTeam, TeamMember } from "@/services/registrationService";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import AnimatedBackground from "@/components/AnimatedBackground";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { toast } from "@/components/ui/use-toast";
-
-interface InputChangeEvent extends React.ChangeEvent<HTMLInputElement> {}
+import { useToast } from "@/components/ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { PartyPopper, Loader } from "lucide-react";
+import { registerTeam } from "@/services/registrationService";
 
 const RegisterPage = () => {
-  const [teamName, setTeamName] = useState("");
-  const [projectTitle, setProjectTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [abstract, setAbstract] = useState("");
-  const [members, setMembers] = useState<TeamMember[]>([
-    { name: "", email: "", mobile: "", role: "", year: "" },
-  ]);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    teamName: "",
+    projectTitle: "",
+    category: "",
+    abstract: "",
+    members: [
+      { name: "", email: "", mobile: "", role: "Leader", year: "" },
+      { name: "", email: "", mobile: "", role: "Member", year: "" },
+      { name: "", email: "", mobile: "", role: "Member", year: "" },
+      { name: "", email: "", mobile: "", role: "Member", year: "" },
+    ],
+  });
   const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoError, setVideoError] = useState("");
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [registrationId, setRegistrationId] = useState("");
 
-  const handleAddMember = () => {
-    setMembers([...members, { name: "", email: "", mobile: "", role: "", year: "" }]);
+  const categories = [
+    "Artificial Intelligence & Machine Learning",
+    "Web Development",
+    "Game Development",
+    "App Development",
+    "Blockchain",
+    "Other",
+  ];
+
+  const yearOptions = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
+
+  const handleMemberChange = (index: number, field: string, value: string) => {
+    const updatedMembers = [...formData.members];
+    updatedMembers[index] = { ...updatedMembers[index], [field]: value };
+    setFormData({ ...formData, members: updatedMembers });
   };
 
-  const handleRemoveMember = (index: number) => {
-    const newMembers = [...members];
-    newMembers.splice(index, 1);
-    setMembers(newMembers);
+  const validateVideo = (file: File) => {
+    const validTypes = ["video/mp4", "video/x-m4v", "video/*"];
+    if (!validTypes.includes(file.type)) {
+      setVideoError("Invalid file type - only MP4/M4V allowed");
+      return false;
+    }
+    return true;
   };
 
-  const updateMember = (index: number, field: string, value: string) => {
-    const newMembers = [...members];
-    newMembers[index][field as keyof TeamMember] = value;
-    setMembers(newMembers);
-  };
-
-  const handleVideoChange = (e: InputChangeEvent) => {
+  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setVideoError("");
     const file = e.target.files?.[0];
-    setVideoFile(file || null);
+    if (!file) return;
+
+    if (!validateVideo(file)) return;
+    setVideoFile(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!teamName || !projectTitle || !category || !abstract || members.some(member => !member.name || !member.email || !member.mobile || !member.role || !member.year) || !videoFile) {
+    // Validation
+    if (!videoFile) {
+      setVideoError("Demo video is required");
+      return;
+    }
+
+    if (!formData.teamName || !formData.projectTitle || !formData.category) {
       toast({
-        title: "Error",
-        description: "Please fill in all fields, including all team member details and video.",
+        title: "Missing Information",
+        description: "Red fields require your attention",
         variant: "destructive",
       });
       return;
     }
 
-    setIsSubmitting(true);
-    setUploadProgress(0);
+    if (!formData.members[0].year) {
+      toast({
+        title: "Missing Information",
+        description: "Team leader's year of study is required",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
-      await registerTeam(
-        { teamName, projectTitle, category, abstract, members },
-        videoFile,
-        (progress) => {
-          setUploadProgress(progress);
-        }
-      );
+      setIsSubmitting(true);
 
-      toast({
-        title: "Success",
-        description: "Team registered successfully!",
-      });
+      // Register the team
+      const id = await registerTeam(formData, videoFile);
+      setRegistrationId(id);
 
-      // Reset form
-      setTeamName("");
-      setProjectTitle("");
-      setCategory("");
-      setAbstract("");
-      setMembers([{ name: "", email: "", mobile: "", role: "", year: "" }]);
-      setVideoFile(null);
-      const input = document.getElementById("videoFile") as HTMLInputElement;
-      if (input) {
-        input.value = "";
-      }
-    } catch (error: any) {
+      // Show success dialog
+      setShowSuccessDialog(true);
+    } catch (error) {
+      console.error("Registration failed:", error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to register team. Please try again.",
+        title: "Registration Failed",
+        description: "An error occurred. Please try again later.",
         variant: "destructive",
       });
     } finally {
@@ -102,206 +130,283 @@ const RegisterPage = () => {
       <AnimatedBackground />
 
       <div className="min-h-screen flex items-center justify-center p-4 relative z-10 pt-20 md:pt-24">
-        <div className="glass-card p-6 md:p-8 w-full max-w-3xl border-2 border-squid-red/40 backdrop-blur-xl bg-black/40 shadow-[0_0_50px_rgba(234,56,76,0.2)]">
-          <h2 className="text-2xl font-black text-squid-red text-center mb-6 font-archivo">
-            TEAM REGISTRATION
-          </h2>
+        <div className="glass-card p-8 w-full max-w-2xl border-2 border-squid-red/40 backdrop-blur-xl bg-black/40 shadow-[0_0_50px_rgba(234,56,76,0.2)] relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10 z-0" />
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="teamName" className="text-squid-teal">
-                Team Name
-              </Label>
-              <Input
-                type="text"
-                id="teamName"
-                placeholder="Enter team name"
-                value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}
-                className="bg-black/30 border-2 border-squid-red/50"
-              />
-            </div>
+          <div className="relative z-10">
+            <h2 className="text-3xl font-black text-squid-red text-center mb-2 font-archivo">
+              SOLDIER REGISTRATION
+            </h2>
 
-            <div>
-              <Label htmlFor="projectTitle" className="text-squid-teal">
-                Project Title
-              </Label>
-              <Input
-                type="text"
-                id="projectTitle"
-                placeholder="Enter project title"
-                value={projectTitle}
-                onChange={(e) => setProjectTitle(e.target.value)}
-                className="bg-black/30 border-2 border-squid-red/50"
-              />
-            </div>
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Team Formation */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-squid-pink border-l-4 border-squid-red pl-3">
+                  Stage 1: Team Formation
+                </h3>
 
-            <div>
-              <Label htmlFor="category" className="text-squid-teal">
-                Category
-              </Label>
-              <Select onValueChange={setCategory}>
-                <SelectTrigger className="bg-black/30 border-2 border-squid-red/50">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="AI & Machine Learning">AI & Machine Learning</SelectItem>
-                  <SelectItem value="Web Development">Web Development</SelectItem>
-                  <SelectItem value="Mobile App Development">Mobile App Development</SelectItem>
-                  <SelectItem value="Game Development">Game Development</SelectItem>
-                  <SelectItem value="Data Science">Data Science</SelectItem>
-                  <SelectItem value="Cybersecurity">Cybersecurity</SelectItem>
-                  <SelectItem value="Blockchain">Blockchain</SelectItem>
-                  <SelectItem value="Internet of Things (IoT)">Internet of Things (IoT)</SelectItem>
-                  <SelectItem value="AR/VR">AR/VR</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                <input
+                  value={formData.teamName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, teamName: e.target.value })
+                  }
+                  className="w-full px-4 py-3 bg-black/30 border-2 border-squid-red/50 rounded-lg"
+                  placeholder="Team Name *"
+                  required
+                  disabled={isSubmitting}
+                />
 
-            <div>
-              <Label htmlFor="abstract" className="text-squid-teal">
-                Abstract
-              </Label>
-              <Textarea
-                id="abstract"
-                placeholder="Enter project abstract"
-                value={abstract}
-                onChange={(e) => setAbstract(e.target.value)}
-                className="bg-black/30 border-2 border-squid-red/50 resize-none"
-              />
-            </div>
-
-            <div>
-              <Label className="text-squid-teal">Team Members</Label>
-              <div className="space-y-3">
-                {members.map((member, index) => (
-                  <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-3">
-                    <div>
-                      <Label htmlFor={`name-${index}`} className="text-squid-teal text-sm">
-                        Name
-                      </Label>
-                      <Input
-                        type="text"
-                        id={`name-${index}`}
-                        placeholder="Name"
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {formData.members.map((member, index) => (
+                    <div
+                      key={index}
+                      className="bg-black/20 p-4 rounded-lg border border-squid-red/30"
+                    >
+                      <div className="text-squid-teal text-sm mb-2">
+                        Member {index + 1} - {member.role}
+                        {index === 0 && (
+                          <span className="text-squid-red ml-2">*</span>
+                        )}
+                      </div>
+                      <input
+                        placeholder="Full Name *"
                         value={member.name}
-                        onChange={(e) => updateMember(index, "name", e.target.value)}
-                        className="bg-black/30 border-2 border-squid-red/50"
+                        onChange={(e) =>
+                          handleMemberChange(index, "name", e.target.value)
+                        }
+                        className="w-full px-3 py-2 mb-2 bg-black/40 border border-squid-red/30 rounded-md"
+                        required={index === 0}
+                        disabled={isSubmitting}
                       />
-                    </div>
-                    <div>
-                      <Label htmlFor={`email-${index}`} className="text-squid-teal text-sm">
-                        Email
-                      </Label>
-                      <Input
+                      <input
                         type="email"
-                        id={`email-${index}`}
-                        placeholder="Email"
+                        placeholder="Email *"
                         value={member.email}
-                        onChange={(e) => updateMember(index, "email", e.target.value)}
-                        className="bg-black/30 border-2 border-squid-red/50"
+                        onChange={(e) =>
+                          handleMemberChange(index, "email", e.target.value)
+                        }
+                        className="w-full px-3 py-2 mb-2 bg-black/40 border border-squid-red/30 rounded-md"
+                        required={index === 0}
+                        disabled={isSubmitting}
                       />
-                    </div>
-                    <div>
-                      <Label htmlFor={`mobile-${index}`} className="text-squid-teal text-sm">
-                        Mobile
-                      </Label>
-                      <Input
+                      <input
                         type="tel"
-                        id={`mobile-${index}`}
-                        placeholder="Mobile"
+                        placeholder="Mobile (+91) *"
                         value={member.mobile}
-                        onChange={(e) => updateMember(index, "mobile", e.target.value)}
-                        className="bg-black/30 border-2 border-squid-red/50"
+                        onChange={(e) =>
+                          handleMemberChange(index, "mobile", e.target.value)
+                        }
+                        className="w-full px-3 py-2 mb-2 bg-black/40 border border-squid-red/30 rounded-md"
+                        required={index === 0}
+                        disabled={isSubmitting}
                       />
-                    </div>
-                    <div>
-                      <Label htmlFor={`role-${index}`} className="text-squid-teal text-sm">
-                        Role
-                      </Label>
-                      <Input
-                        type="text"
-                        id={`role-${index}`}
-                        placeholder="Role"
-                        value={member.role}
-                        onChange={(e) => updateMember(index, "role", e.target.value)}
-                        className="bg-black/30 border-2 border-squid-red/50"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor={`year-${index}`} className="text-squid-teal text-sm">
-                        Year
-                      </Label>
-                      <Input
-                        type="text"
-                        id={`year-${index}`}
-                        placeholder="Year"
+                      <Select
                         value={member.year}
-                        onChange={(e) => updateMember(index, "year", e.target.value)}
-                        className="bg-black/30 border-2 border-squid-red/50"
-                      />
-                    </div>
-                    {members.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleRemoveMember(index)}
-                        className="col-span-full md:col-span-1 w-full"
+                        onValueChange={(value) =>
+                          handleMemberChange(index, "year", value)
+                        }
+                        disabled={isSubmitting}
                       >
-                        Remove
-                      </Button>
-                    )}
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={handleAddMember}
-                  className="w-full"
-                >
-                  Add Member
-                </Button>
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="videoFile" className="text-squid-teal">
-                Demo Video (mp4, max 100MB)
-              </Label>
-              <Input
-                type="file"
-                id="videoFile"
-                accept="video/mp4"
-                onChange={handleVideoChange}
-                className="bg-black/30 file:border-0 file:bg-squid-red file:text-white file:font-bold file:h-10 hover:file:bg-squid-pink text-white border-2 border-squid-red/50"
-              />
-            </div>
-
-            {isSubmitting && (
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <p className="text-squid-teal text-sm">Uploading video...</p>
-                  <span className="text-squid-pink font-medium">{Math.round(uploadProgress)}%</span>
+                        <SelectTrigger className="bg-black/40 border border-squid-red/30">
+                          <SelectValue placeholder="Year of Study *" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-squid-dark border border-squid-red/30">
+                          {yearOptions.map((year) => (
+                            <SelectItem
+                              key={year}
+                              value={year}
+                              className="hover:bg-squid-red/10"
+                            >
+                              {year}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  ))}
                 </div>
-                <Progress 
-                  value={uploadProgress} 
-                  className="h-2 bg-black/30 border border-squid-red/30"
+              </div>
+
+              {/* Project Details */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-squid-pink border-l-4 border-squid-red pl-3">
+                  Stage 2: Project Details
+                </h3>
+
+                <input
+                  value={formData.projectTitle}
+                  onChange={(e) =>
+                    setFormData({ ...formData, projectTitle: e.target.value })
+                  }
+                  className="w-full px-4 py-3 bg-black/30 border-2 border-squid-red/50 rounded-lg"
+                  placeholder="Project Title *"
+                  required
+                  disabled={isSubmitting}
+                />
+
+                <Select
+                  value={formData.category}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, category: value })
+                  }
+                  disabled={isSubmitting}
+                >
+                  <SelectTrigger className="bg-black/30 border-2 border-squid-red/50">
+                    <SelectValue placeholder="Select Category *" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-squid-dark border border-squid-red/30">
+                    {categories.map((category) => (
+                      <SelectItem
+                        key={category}
+                        value={category}
+                        className="hover:bg-squid-red/10"
+                      >
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <textarea
+                  value={formData.abstract}
+                  onChange={(e) =>
+                    setFormData({ ...formData, abstract: e.target.value })
+                  }
+                  className="w-full px-4 py-3 bg-black/30 border-2 border-squid-red/50 rounded-lg h-32"
+                  placeholder="Project Abstract *"
+                  required
+                  disabled={isSubmitting}
                 />
               </div>
-            )}
 
-            <Button
-              type="submit"
-              className="squid-btn-primary w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Register Team"}
-            </Button>
-          </form>
+              {/* Video Upload */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-squid-pink border-l-4 border-squid-red pl-3">
+                  Stage 3: Video Upload
+                </h3>
+
+                <div className="border-2 border-dashed border-squid-red/50 rounded-lg p-6 bg-black/30 flex flex-col items-center">
+                  <input
+                    type="file"
+                    accept="video/mp4,video/x-m4v,video/*"
+                    onChange={handleVideoUpload}
+                    className="hidden"
+                    id="video-upload"
+                    disabled={isSubmitting}
+                  />
+                  <label
+                    htmlFor="video-upload"
+                    className={`squid-btn-outline cursor-pointer inline-flex items-center gap-2 mb-4 ${
+                      isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    Upload Video *
+                  </label>
+
+                  {videoFile ? (
+                    <div className="mt-2 flex flex-col items-center w-full">
+                      <div className="w-16 h-16 bg-squid-red/20 rounded-full flex items-center justify-center mb-2 animate-pulse">
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="w-8 h-8 text-squid-red"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polygon points="23 7 16 12 23 17 23 7" />
+                          <rect
+                            x="1"
+                            y="5"
+                            width="15"
+                            height="14"
+                            rx="2"
+                            ry="2"
+                          />
+                        </svg>
+                      </div>
+                      <p className="text-squid-teal text-center font-medium">
+                        {videoFile.name}
+                      </p>
+                      <p className="text-xs text-squid-teal/70 mt-1">
+                        {(videoFile.size / (1024 * 1024)).toFixed(2)} MB
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="text-center text-squid-teal/60 text-sm">
+                      <p>Select your demo video file</p>
+                      <p className="mt-1 text-xs">(MP4/M4V format)</p>
+                    </div>
+                  )}
+
+                  {videoError && (
+                    <p className="text-squid-red mt-3 text-sm font-medium animate-pulse">
+                      ⚠️ {videoError}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="squid-btn-primary w-full py-4 text-lg font-bold hover:bg-squid-red/90 relative"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader className="w-5 h-5 animate-spin mr-2" />
+                    PROCESSING...
+                  </>
+                ) : (
+                  "SUBMIT REGISTRATION"
+                )}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
+
+      {/* Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="bg-black border-2 border-squid-red/40 backdrop-blur-xl shadow-[0_0_50px_rgba(234,56,76,0.3)] max-w-md">
+          <DialogHeader className="space-y-4">
+            <div className="flex justify-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-squid-red/20 to-squid-teal/20 flex items-center justify-center animate-pulse">
+                <PartyPopper className="h-10 w-10 text-squid-red" />
+              </div>
+            </div>
+            <DialogTitle className="text-2xl font-black text-squid-red text-center">
+              REGISTRATION COMPLETE!
+            </DialogTitle>
+            <DialogDescription className="text-center text-squid-teal font-medium">
+              <p className="mb-4">Your registration has been saved!</p>
+              <div className="bg-black/30 p-4 rounded-lg border border-squid-red/20 mb-4">
+                <p className="font-bold text-squid-pink mb-1">
+                  Team: {formData.teamName}
+                </p>
+                <p className="text-sm">Project: {formData.projectTitle}</p>
+                <p className="text-sm">Category: {formData.category}</p>
+                <p className="text-xs mt-2 font-mono text-s border-t border-squid-red/20 pt-2">
+                  Registration ID: {registrationId}
+                </p>
+              </div>
+              <p className="text-sm">
+                Get ready for the ultimate coding battle!
+              </p>
+              <button
+                onClick={() => {
+                  setShowSuccessDialog(false);
+                  navigate("/");
+                }}
+                className="mt-4 squid-btn-primary"
+              >
+                Return to Home
+              </button>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
