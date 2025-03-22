@@ -29,8 +29,23 @@ const Header: React.FC = () => {
     setShowAdminLink(isAdmin);
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    
+    // Add event listener for storage changes to detect admin login/logout in other tabs
+    const handleStorageChange = () => {
+      const isAdmin = localStorage.getItem("adminAuth") === "true";
+      setShowAdminLink(isAdmin);
+    };
+    
+    window.addEventListener("storage", handleStorageChange);
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
+
+  // Add a debug log to check if showAdminLink is set correctly
+  console.log("showAdminLink:", showAdminLink);
 
   const isActive = (path: string) => {
     return location.pathname === path 
@@ -103,15 +118,14 @@ const Header: React.FC = () => {
             <Link to="/register" className="squid-btn-primary">
               Join Now
             </Link>
-            {showAdminLink && (
-              <Link 
-                to="/admin" 
-                className="squid-btn-outline text-sm md:hidden"
-                aria-label="Admin Panel"
-              >
-                <Shield className="w-4 h-4" />
-              </Link>
-            )}
+            <Link 
+              to="/admin" 
+              className="squid-btn-outline text-sm flex items-center"
+              aria-label="Admin Access"
+            >
+              <Shield className="w-4 h-4" />
+              <span className="ml-1 hidden md:inline">Admin</span>
+            </Link>
           </div>
         </div>
       </div>

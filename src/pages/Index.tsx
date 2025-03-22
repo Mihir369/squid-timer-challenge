@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -7,6 +8,7 @@ import InstructionSection from "@/components/InstructionSection";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import { Triangle, Circle, Square, AlertTriangle, Skull, Shield } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [endDate] = useState(() => {
@@ -30,10 +32,6 @@ const Index = () => {
       variant: "destructive",
       duration: 5000,
     });
-  };
-
-  const navigateToAdmin = () => {
-    window.location.href = '/admin';
   };
 
   return (
@@ -150,10 +148,23 @@ const Index = () => {
               your chance.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="squid-btn-primary text-lg animate-pulse-danger">
+              <Link to="/register" className="squid-btn-primary text-lg animate-pulse-danger">
                 Register Now
-              </button>
-              <button className="squid-btn-outline text-lg">Learn More</button>
+              </Link>
+              <Link to="/about" className="squid-btn-outline text-lg">
+                Learn More
+              </Link>
+            </div>
+            
+            {/* Added visible admin login button */}
+            <div className="mt-8 pt-4 border-t border-squid-red/20">
+              <Link
+                to="/admin"
+                className="inline-flex items-center text-squid-red/70 hover:text-squid-red transition-colors"
+              >
+                <Shield className="w-4 h-4 mr-2" />
+                Admin Access
+              </Link>
             </div>
           </div>
         </div>
@@ -162,14 +173,14 @@ const Index = () => {
 
       {/* Admin access at the bottom, very subtle */}
       <div className="absolute bottom-4 right-4 opacity-30 hover:opacity-100 transition-opacity">
-        <button 
-          onClick={navigateToAdmin}
+        <Link 
+          to="/admin"
           className="text-xs text-gray-500 hover:text-squid-red flex items-center"
           aria-label="Admin Access"
         >
           <Shield className="w-3 h-3 mr-1" />
           Admin
-        </button>
+        </Link>
       </div>
     </div>
   );

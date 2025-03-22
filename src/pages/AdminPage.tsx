@@ -6,6 +6,8 @@ import { RegistrationData } from "@/services/registrationService";
 import Header from "@/components/Header";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Shield, Info } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const AdminPage = () => {
   const [registrations, setRegistrations] = useState<RegistrationData[]>([]);
@@ -13,12 +15,19 @@ const AdminPage = () => {
   const [error, setError] = useState("");
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
+  const { toast } = useToast();
 
   const authenticate = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === "squidadmin") {
       setAuthenticated(true);
       localStorage.setItem("adminAuth", "true");
+      
+      toast({
+        title: "Admin Access Granted",
+        description: "You're now logged in as an admin",
+        duration: 3000,
+      });
     } else {
       setError("Invalid password");
     }
@@ -70,6 +79,13 @@ const AdminPage = () => {
             </h2>
             
             <form onSubmit={authenticate} className="space-y-4">
+              <div className="bg-black/50 p-4 rounded-lg border border-squid-teal/30 flex items-start mb-4">
+                <Info className="h-5 w-5 text-squid-teal shrink-0 mt-0.5 mr-2" />
+                <p className="text-sm text-squid-teal/90">
+                  Use the password <span className="font-mono bg-black/40 px-2 py-0.5 rounded">squidadmin</span> to access the admin panel.
+                </p>
+              </div>
+              
               <input
                 type="password"
                 value={password}
@@ -86,6 +102,7 @@ const AdminPage = () => {
                 type="submit"
                 className="squid-btn-primary w-full"
               >
+                <Shield className="w-4 h-4 mr-2" />
                 Access Admin Panel
               </button>
             </form>
