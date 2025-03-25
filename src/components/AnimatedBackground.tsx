@@ -92,12 +92,12 @@ const AnimatedBackground: React.FC = () => {
       {/* Animated shapes */}
       {renderShapes()}
       
-      {/* Centered Squid Game soldier with enhanced mobile animation */}
+      {/* Centered Squid Game soldier with enhanced mobile animation and INCREASED SIZE */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
         <img 
           src="/squid-soldier.png" 
           alt="Squid Game Soldier" 
-          className={`${isMobile ? 'w-48' : 'w-64'} h-auto opacity-90 filter ${isMobile ? 'animate-neon-pulse' : ''}`}
+          className={`${isMobile ? 'w-64' : 'w-80'} h-auto opacity-90 filter ${isMobile ? 'animate-neon-pulse' : ''}`}
           style={{ 
             filter: isMobile
               ? 'drop-shadow(0 0 15px rgba(255, 10, 108, 0.8))'
