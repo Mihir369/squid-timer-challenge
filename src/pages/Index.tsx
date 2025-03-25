@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -49,8 +48,8 @@ const Index = () => {
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-4 md:mb-6 flex justify-center space-x-3 md:space-x-4">
               <AlertTriangle className="h-8 w-8 md:h-12 md:w-12 text-squid-red animate-pulse-danger" />
-              <Circle className="h-8 w-8 md:h-12 md:w-12 text-squid-teal animate-float animation-delay-500" />
-              <Skull className="h-8 w-8 md:h-12 md:w-12 text-squid-red animate-pulse-danger animation-delay-1000" />
+              <Circle className="h-8 w-8 md:h-12 md:w-12 text-squid-teal animate-subtle-bounce" />
+              <Skull className="h-8 w-8 md:h-12 md:w-12 text-squid-red animate-shake" />
             </div>
 
             <div className="flex justify-center mb-4 md:mb-6 animate-fade-in">
@@ -58,7 +57,7 @@ const Index = () => {
                 <img
                   src="/ingenious-logo.png"
                   alt="INGENIOUS"
-                  className="h-12 sm:h-16 md:h-20 transition-all duration-300"
+                  className="h-12 sm:h-16 md:h-20 transition-all duration-300 animate-pulse-glow"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.style.display = "none";
@@ -66,7 +65,7 @@ const Index = () => {
                     if (parent) {
                       const textSpan = document.createElement("span");
                       textSpan.className =
-                        "text-4xl sm:text-5xl md:text-7xl font-black font-archivo tracking-tight text-white";
+                        "text-4xl sm:text-5xl md:text-7xl font-black font-archivo tracking-tight text-white animate-pulse-glow";
                       textSpan.textContent = "INGENIOUS";
                       parent.appendChild(textSpan);
                     }
@@ -152,7 +151,7 @@ const Index = () => {
               your chance.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link to="/register" className="squid-btn-primary text-base md:text-lg animate-pulse-danger">
+              <Link to="/register" className="squid-btn-primary text-base md:text-lg animate-pulse-glow">
                 Register Now
               </Link>
               <Link to="/about" className="squid-btn-outline text-base md:text-lg">
