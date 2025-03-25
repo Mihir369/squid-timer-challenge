@@ -2,13 +2,11 @@
 import React from 'react';
 import { useScrollAnimation } from '@/lib/animations';
 import { Triangle, Circle, Square, AlertCircle } from 'lucide-react';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 const InstructionSection: React.FC = () => {
   const animation1 = useScrollAnimation();
   const animation2 = useScrollAnimation();
   const animation3 = useScrollAnimation();
-  const isMobile = useIsMobile();
   
   return (
     <section className="py-20 bg-black/30">
@@ -30,7 +28,7 @@ const InstructionSection: React.FC = () => {
           >
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 rounded-full bg-squid-pink/20 flex items-center justify-center mb-4">
-                <Triangle className={`h-8 w-8 text-squid-pink ${isMobile ? 'animate-pulse' : 'animate-float'}`} />
+                <Triangle className="h-8 w-8 text-squid-pink" />
               </div>
               <h3 className="text-xl font-bold mb-2">Registration</h3>
               <p className="text-gray-300">
@@ -67,7 +65,7 @@ const InstructionSection: React.FC = () => {
           >
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 rounded-full bg-squid-teal/20 flex items-center justify-center mb-4">
-                <Circle className={`h-8 w-8 text-squid-teal ${isMobile ? 'animate-subtle-bounce' : 'animate-float'}`} />
+                <Circle className="h-8 w-8 text-squid-teal" />
               </div>
               <h3 className="text-xl font-bold mb-2">Selection Process</h3>
               <p className="text-gray-300">
@@ -104,7 +102,7 @@ const InstructionSection: React.FC = () => {
           >
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 rounded-full bg-squid-pink/20 flex items-center justify-center mb-4">
-                <Square className={`h-8 w-8 text-squid-pink ${isMobile ? 'animate-shake' : 'animate-float'}`} />
+                <Square className="h-8 w-8 text-squid-pink" />
               </div>
               <h3 className="text-xl font-bold mb-2">Game Day</h3>
               <p className="text-gray-300">

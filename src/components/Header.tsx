@@ -74,9 +74,9 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="flex space-x-2 items-center">
-              <AlertTriangle className="h-5 w-5 md:h-6 md:w-6 text-squid-red animate-pulse" />
-              <Circle className="h-5 w-5 md:h-6 md:w-6 text-squid-teal animate-bounce" />
-              <Square className="h-5 w-5 md:h-6 md:w-6 text-squid-red animate-pulse" />
+              <AlertTriangle className="h-5 w-5 md:h-6 md:w-6 text-squid-red" />
+              <Circle className="h-5 w-5 md:h-6 md:w-6 text-squid-teal" />
+              <Square className="h-5 w-5 md:h-6 md:w-6 text-squid-red" />
             </div>
             <Link to="/" className="flex items-center ml-2">
               <div className="flex items-center">
@@ -90,7 +90,7 @@ const Header: React.FC = () => {
           {/* Mobile Actions */}
           <div className="flex items-center gap-2 md:hidden">
             {/* Join Now Button - ADDED TO MOBILE NAV */}
-            <Link to="/register" className="squid-btn-primary py-1.5 px-3 text-sm animate-pulse">
+            <Link to="/register" className="squid-btn-primary py-1.5 px-3 text-sm">
               Join Now
             </Link>
             
@@ -163,36 +163,31 @@ const Header: React.FC = () => {
             <nav className="flex flex-col space-y-4">
               <Link
                 to="/"
-                className={`transition-colors ${isActive('/')} py-2 animate-fade-in`}
-                style={{ animationDelay: "50ms" }}
+                className={`transition-colors ${isActive('/')} py-2`}
               >
                 Home
               </Link>
               <Link
                 to="/about"
-                className={`transition-colors ${isActive('/about')} py-2 animate-fade-in`}
-                style={{ animationDelay: "100ms" }}
+                className={`transition-colors ${isActive('/about')} py-2`}
               >
                 About
               </Link>
               <Link
                 to="/register"
-                className={`transition-colors ${isActive('/register')} py-2 animate-fade-in`}
-                style={{ animationDelay: "150ms" }}
+                className={`transition-colors ${isActive('/register')} py-2`}
               >
                 Register
               </Link>
               <Link
                 to="/contact"
-                className={`transition-colors ${isActive('/contact')} py-2 animate-fade-in`}
-                style={{ animationDelay: "200ms" }}
+                className={`transition-colors ${isActive('/contact')} py-2`}
               >
                 Contact
               </Link>
               <Link
                 to="/admin"
-                className={`transition-colors flex items-center ${isActive('/admin')} py-2 animate-fade-in`}
-                style={{ animationDelay: "250ms" }}
+                className={`transition-colors flex items-center ${isActive('/admin')} py-2`}
               >
                 <Shield className="w-4 h-4 mr-2" />
                 Admin
