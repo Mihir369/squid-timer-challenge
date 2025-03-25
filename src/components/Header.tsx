@@ -87,14 +87,22 @@ const Header: React.FC = () => {
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden text-white p-1" 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile Actions */}
+          <div className="flex items-center gap-2 md:hidden">
+            {/* Join Now Button - ADDED TO MOBILE NAV */}
+            <Link to="/register" className="squid-btn-primary py-1.5 px-3 text-sm">
+              Join Now
+            </Link>
+            
+            {/* Mobile Menu Button */}
+            <button 
+              className="text-white p-1" 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
@@ -184,11 +192,6 @@ const Header: React.FC = () => {
                 <Shield className="w-4 h-4 mr-2" />
                 Admin
               </Link>
-              <div className="pt-2 flex flex-col space-y-3">
-                <Link to="/register" className="squid-btn-primary text-sm py-2">
-                  Join Now
-                </Link>
-              </div>
             </nav>
           </div>
         )}
